@@ -75,6 +75,17 @@ Untuk mencapai performa tinggi, ikuti alur (flow) berikut:
 
 ---
 
+## 🔝 Development Priority (Prioritas Pengerjaan)
+
+Disarankan mengerjakan fitur dengan urutan berikut (Bobot terbesar pada Peta & List):
+
+1.  **Map Clustering (Critical)**: Pastikan fitur ini smooth sebelum mengerjakan layer lainnya.
+2.  **Infinite Scroll (High)**: Implementasi cursor pagination pada List & Dropdown Kota.
+3.  **Authentication & Form**: Login, Register, dan Add Property.
+4.  **UI Polish**: Detailing desain, animasi, dan transisi.
+
+---
+
 ## 🏆 Evaluation Criteria (Penilaian)
 
 Aplikasi Anda akan dinilai berdasarkan aspek berikut:
@@ -84,7 +95,7 @@ Aplikasi Anda akan dinilai berdasarkan aspek berikut:
     *   Kelancaran Map saat menangani ribuan data.
     *   Efisiensi penggunaan memori dan network request.
 2.  **Code Quality (30%)**:
-    *   Struktur kode yang rapi (Clean Architecture / MVVM / BLoC / Repository Pattern).
+    *   Struktur kode yang rapi (Clean Architecture / MVVM / **Riverpod** / BLoC / Repository Pattern).
     *   Penamaan variable/fungsi yang jelas.
     *   Error Handling (Menangani respons error dari API / No Internet).
 3.  **UI/UX (20%)**:
