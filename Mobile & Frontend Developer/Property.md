@@ -1,114 +1,105 @@
 # Mobile / Frontend Developer Technical Test
-**Project: Property Super App**
-
-## 🎯 Objective
-Membangun aplikasi mobile/web yang responsif, performant, dan memiliki User Experience (UX) premium untuk pencarian properti. Kandidat diharapkan mengimplementasikan fitur **Map Clustering**, **Infinite Scroll**, dan **Optimized Search** menggunakan API yang telah disediakan.
+**Position**: Mobile / Frontend Developer  
+**Project**: Property Super App (Clone/Mini Version)  
+**Time Limit**: 2 - 4 Days
 
 ---
 
-## 📱 Fitur Utama (Requirements)
+## 📖 Scenario
+Anda diminta untuk membangun sebuah aplikasi pencarian properti (Rumah, Apartemen, Ruko) yang modern dan performa tinggi. Fokus utama dari tes ini adalah kemampuan Anda dalam menangani **Data Besar (Large Datasets)**, **Optimasi Rendering Peta (Map Clustering)**, dan **User Experience (Infinite Scroll)** yang mulus.
 
-### 1. Authentication
-*   **Splash Screen**: Tampilan awal aplikasi.
-*   **Login & Register**: 
-    *   Validasi input (Email format, Password min 8 char).
-    *   Auto-login setelah registrasi sukses.
-    *   Simpan Token (JWT) di storage lokal secara aman.
+---
+
+## 🛠️ Resources (Sumber Daya)
+
+| Resource | Link |
+| :--- | :--- |
+| **UI Design (Figma)** | [Klik disini untuk membuka Figma](https://www.figma.com/design/rxWBpijXFKlC56dF4nmEaC/Test-Mobile-Developer---Talent-Insider?node-id=0-1&t=djmeOacipM86E2zz-1) |
+| **API Documentation** | [Klik disini untuk membuka SwaggerHub](https://app.swaggerhub.com/apis/ADMIN_186/test-talent-insider/1.0.0) |
+| **Base URL API** | `https://api-test.linkedinindonesia.com/api` |
+
+---
+
+## 📱 Functional Requirements (Fitur Utama)
+
+### 1. Authentication Module
+*   **Splash Screen**: Tampilan pembuka yang elegan.
+*   **Register**: 
+    *   Form: First Name, Last Name, Email, Phone, Password.
+    *   Validasi: Email harus valid, Password min. 8 karakter.
+*   **Login**: Masuk menggunakan Email & Password.
+*   **Session Management**: Simpan token (JWT) secara aman. User tidak perlu login ulang saat menutup aplikasi.
 
 ### 2. Home & Property List (Infinite Scroll)
-*   **Tampilan List**: Menampilkan daftar properti dalam bentuk Card.
-*   **Infinite Scroll**: Tidak boleh load semua data sekaligus. Gunakan **Cursor Pagination** yang disediakan API.
+*   **Tampilan List**: Tampilkan daftar properti dalam bentuk Card vertical.
+*   **Infinite Scroll (Wajib)**: 
+    *   Terapkan **Cursor Pagination** (bukan page number biasa).
+    *   Load data per 10-20 item. Saat user scroll ke bawah, load data berikutnya otomatis.
 *   **Filter & Sort**:
-    *   Filter berdasarkan `Type` (Rumah, Apartemen, Ruko).
-    *   Filter based on `Status` (New, Second).
-    *   Range Harga (`price_min`, `price_max`).
+    *   Filter dropdown: `Type` (Rumah/Apartemen), `Status` (New/Second).
+    *   Price Range: Input `Min Price` dan `Max Price`.
 
-### 3. Smart Search & Location Filter
-*   **Search Bar**: Pencarian properti berdasarkan nama.
-*   **Location Dropdown**: 
-    *   Dropdown "Pilih Kota" yang datanya diambil dari API.
-    *   Dropdown ini **wajib** menggunakan **Infinite Scroll** (karena data kota bisa ribuan) dan fitur **Search** (ketik nama kota).
+### 3. Smart Location & Search
+*   **Search Bar**: Pencarian properti berdasarkan nama (Contoh: "Rumah Mewah").
+*   **City Filter (Dropdown)**:
+    *   Dropdown untuk memilih kota (Contoh: "Jakarta Selatan").
+    *   **Tantangan**: Data kota berjumlah ribuan. Dropdown **HARUS** support **Search** (ketik nama kota) dan **Infinite Scroll** di dalam dropdown itu sendiri.
+    *   API Endpoint: `GET /locations/cities`
 
-### 4. Interactive Map & Clustering (CORE FEATURE) 🌟
-Ini adalah fitur terpenting. Aplikasi harus mampu menangani 5.000+ pin properti di peta tanpa lag.
-*   **Map Interface**: Google Maps / Mapbox / Leaflet.
-*   **Client-Side Clustering Logic**:
-    1.  Kandidat harus mendeteksi pergerakan peta (Pan/Zoom).
-    2.  Ambil koordinat batas layar (**SouthWest** & **NorthEast**).
-    3.  Panggil API `/locations/cluster` untuk mendapatkan ID properti di area tersebut.
-    4.  Panggil API `/properties/search` menggunakan ID yang didapat untuk mengambil detail properti (gunakan `view_mode=simple`).
-    5.  Render Marker di peta.
+### 4. Interactive Map & Clustering (🌟 Core Challenge)
+Fitur ini memiliki bobot penilaian tertinggi. Aplikasi harus mampu me-render **5.000+ data properti** di peta tanpa lag.
+*   **Map Engine**: Bebas (Google Maps SDK, Mapbox, atau Leaflet).
+*   **Optimization**: Jangan me-load semua 5.000 marker sekaligus karena akan membuat HP nge-lag. Gunakan teknik **Server-Side Clustering** (Lihat panduan teknis di bawah).
+*   **Interaction**:
+    *   Saat user geser/zoom peta --> Load ulang marker sesuai area yang terlihat.
+    *   Klik Cluster/Marker --> Tampilkan detail singkat properti.
 
 ### 5. Add Property Form
-*   **Input Data**: Nama, Harga, Deskripsi, Tipe, Alamat.
-*   **Upload Image**: Pilih gambar dari galeri/kamera, convert ke **Base64 string**, dan kirim ke API.
+*   **Input**: Nama Properti, Harga, Deskripsi, Alamat Lengkap.
+*   **Image Upload**: Ambil foto dari Galeri/Kamera, convert menjadi **Base64 String**, lalu kirim ke API.
 
 ---
 
-## 🔗 API Integration Guide
+## ⚙️ Technical Guide: Map Clustering Logic
 
-**Documentation (Swagger)**: [https://app.swaggerhub.com/apis/ADMIN_186/test-talent-insider/1.0.0](https://app.swaggerhub.com/apis/ADMIN_186/test-talent-insider/1.0.0)
-**Design (Figma)**: [https://www.figma.com/design/rxWBpijXFKlC56dF4nmEaC/Test-Mobile-Developer---Talent-Insider?node-id=0-1&t=djmeOacipM86E2zz-1](https://www.figma.com/design/rxWBpijXFKlC56dF4nmEaC/Test-Mobile-Developer---Talent-Insider?node-id=0-1&t=djmeOacipM86E2zz-1)
+Untuk mencapai performa tinggi, ikuti alur (flow) berikut:
 
-**Base URL**: `https://api-test.linkedinindonesia.com/api`
-
-### A. Authentication
-*   `POST /register`: Kirim `email`, `password`, `first_name`, `last_name`, `phone`.
-*   `POST /login`: Kirim `email`, `password`.
-
-### B. Property Data (Infinite Scroll)
-*   `GET /properties`
-    *   **Params**: `cursor` (untuk next page), `search`, `type`, `status`.
-    *   **Tips**: Gunakan `next_page_url` atau `next_cursor` dari response JSON untuk load page selanjutnya.
-
-### C. Location / City Dropdown
-*   `GET /locations/cities`
-    *   **Params**: `search` (ketik nama kota), `cursor` (scroll ke bawah load more).
-    *   **Output**: List unik nama kota.
-
-### D. Map Clustering Flow (High Performance)
-Untuk menangani ribuan data, jangan panggil `GET /properties` biasa. Gunakan flow ini:
-
-1.  **Step 1: Get Property IDs in Viewport**
-    *   Endpoint: `POST /locations/cluster`
-    *   Body:
-        ```json
-        {
-          "bounds": [
-             {
-               "sw_latitude": -6.300, "sw_longitude": 106.700,
-               "ne_latitude": -6.100, "ne_longitude": 106.900
-             }
-          ]
-        }
-        ```
-    *   Response: Array of Property IDs (Contoh: `[101, 105, 209, ...]`)
-
-2.  **Step 2: Fetch Data by IDs**
-    *   Endpoint: `POST /properties/search`
-    *   Body:
-        ```json
-        {
-          "ids": [101, 105, 209, ...],
-          "view_mode": "simple"  <-- PENTING: Gunakan 'simple' agar response ringan
-        }
-        ```
-    *   Response: List properti ringkas (ID, Nama, Harga, Koordinat/Alamat) untuk dirender jadi Marker.
+1.  **Detect Map Movement**: Listen event saat user selesai menggeser (drag/pan) atau zoom peta.
+2.  **Get Bounds**: Dapatkan koordinat batas layar HP user saat ini:
+    *   `sw_latitude`, `sw_longitude` (Pojok Kiri Bawah)
+    *   `ne_latitude`, `ne_longitude` (Pojok Kanan Atas)
+3.  **Fetch Clusters (API 1)**: Panggil endpoint `POST /locations/cluster` dengan mengirim koordinat `bounds` tersebut. API ini akan mengembalikan **Array of Property IDs** yang ada di dalam layar saja.
+4.  **Fetch Details (API 2)**: Gunakan ID yang didapat dari langkah 3, lalu panggil endpoint `POST /properties/search`.
+    *   **Penting**: Sertakan parameter `view_mode: "simple"` pada body request agar response API ringan (hanya ID, Lat/Long, Harga, Nama).
+5.  **Render Markers**: Gambar marker berdasarkan data yang didapat. Hapus marker yang sudah tidak terlihat di layar untuk menghemat memori.
 
 ---
 
-## 🏆 Evaluation Criteria
+## 🏆 Evaluation Criteria (Penilaian)
 
-1.  **Code Structure**: Clean Architecture, Separation of Concerns (MVVM/BLoC/Repository Pattern).
-2.  **Performance**:
-    *   Aplikasi tidak boleh "freeze" saat load map.
-    *   Infinite scroll berjalan mulus (60fps).
-3.  **UI/UX**: Desain "Premium", transisi halus, loading state yang jelas (Shimmer effect).
-4.  **Error Handling**: Menangani kondisi offline atau server error dengan baik.
+Aplikasi Anda akan dinilai berdasarkan aspek berikut:
+
+1.  **Performance (40%)**:
+    *   Kelancaran Infinite Scroll (60 FPS).
+    *   Kelancaran Map saat menangani ribuan data.
+    *   Efisiensi penggunaan memori dan network request.
+2.  **Code Quality (30%)**:
+    *   Struktur kode yang rapi (Clean Architecture / MVVM / BLoC / Repository Pattern).
+    *   Penamaan variable/fungsi yang jelas.
+    *   Error Handling (Menangani respons error dari API / No Internet).
+3.  **UI/UX (20%)**:
+    *   Kesesuaian dengan desain Figma.
+    *   User experience yang halus (Transisi, Loading State/Shimmer).
+4.  **Bonus Points (10%)**:
+    *   Unit Testing.
+    *   Animation (Micro-interactions).
+    *   Dark Mode support.
 
 ---
 
-## 📦 Submission
-*   Source code diupload ke GitHub/GitLab.
-*   Video demo singkat aplikasi (.mp4 atau link YouTube/Drive).
-*   APK/IPA file (Optional).
+## 📦 Submission Format
+1.  **Source Code**: Upload ke public repository (GitHub / GitLab).
+2.  **Demo Video**: Rekam layar singkat (1-2 menit) yang menunjukkan fitur Register, Scroll List, Map Clustering, dan Search. Upload ke YouTube (Unlisted) atau sertakan file di repo.
+3.  **APK (Android) / TestFlight (iOS)**: (Optional) Link instalasi aplikasi.
+
+**Selamat Mengerjakan! Good Luck!**
